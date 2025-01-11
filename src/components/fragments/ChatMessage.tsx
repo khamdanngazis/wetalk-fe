@@ -58,24 +58,35 @@ const ChatMessage: React.FC<ChatMessageProps> = () => {
     useEffect(() => {
         if (message) {
           const room = rooms.find((r) => r.id === message.chat_room_id);
-          if (room) {
-            const existingMessageIndex = room.messages.findIndex((m) => m.id === message.id);
-            if (existingMessageIndex === -1) {
-              const newMessage: Message = {
-                id: message.id,
-                text: message.content,
-                type: message.sender_id === userId ? "outgoing" : "incoming",
-                time: message.timestamp,
-                status: (message.status ?? null) as MessageStatus,
-              };
-              dispatch(addMessage({ roomId: room.id, message: newMessage }));
-            } else {
-              const updatedMessage = {
-                ...room.messages[existingMessageIndex],
-                status: message.status,
-                text: message.content,
-              };
-              dispatch(updateMessage({ roomId: room.id, messageId: message.id, updatedMessage }));
+          if (room ) {
+            if (!room.messages) {
+                const newMessage: Message = {
+                    id: message.id,
+                    text: message.content,
+                    type: message.sender_id === userId ? "outgoing" : "incoming",
+                    time: message.timestamp,
+                    status: (message.status ?? null) as MessageStatus,
+                };
+                dispatch(addMessage({ roomId: room.id, message: newMessage }));
+            }else{
+                const existingMessageIndex = room.messages.findIndex((m) => m.id === message.id);
+                if (existingMessageIndex === -1) {
+                const newMessage: Message = {
+                    id: message.id,
+                    text: message.content,
+                    type: message.sender_id === userId ? "outgoing" : "incoming",
+                    time: message.timestamp,
+                    status: (message.status ?? null) as MessageStatus,
+                };
+                dispatch(addMessage({ roomId: room.id, message: newMessage }));
+                } else {
+                const updatedMessage = {
+                    ...room.messages[existingMessageIndex],
+                    status: message.status,
+                    text: message.content,
+                };
+                dispatch(updateMessage({ roomId: room.id, messageId: message.id, updatedMessage }));
+                }
             }
       
             if (message.sender_id !== userId && message.status === 1) {

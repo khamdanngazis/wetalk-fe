@@ -52,13 +52,13 @@ const roomsSlice = createSlice({
       );
     },
     setMessages(state, action) {
-      const { roomId, messages } = action.payload;
+      const { roomId, messages = [] } = action.payload; // Default to empty array
       const room = state.data.rooms.find((room) => room.id === roomId);
       if (room) {
-        const lastMessage = messages[messages.length - 1];
-        room.last_message_time = lastMessage.time;
-        room.last_message = lastMessage.text;
-        room.messages = messages;
+        const lastMessage = messages.length > 0 ? messages[messages.length - 1] : null;
+        room.last_message_time = lastMessage?.time || null;
+        room.last_message = lastMessage?.text || null;
+        room.messages = messages; // Ensure messages is always an array
       }
     },
     addMessage(state, action) {

@@ -27,23 +27,24 @@ const ChatRoomList: React.FC<ChatRoomListProps> = ({setShowChatWindow}) => {
       try {
         // Fetch rooms
         const roomsResponse = await dispatch(fetchRooms({ limit: 10, page: 1, token })).unwrap();
-
+  
         // Fetch messages for each room
         const fetchMessagesPromises = roomsResponse.data.rooms.map(async (room: Room) => {
           try {
             const messageHistory = await getMessageHistory(20, 1, room.id, token);
-            dispatch(setMessages({ roomId: room.id, messages: messageHistory.data.messages }));
+            const messages = messageHistory.data.messages || []; // Default to empty array if undefined
+            dispatch(setMessages({ roomId: room.id, messages }));
           } catch (error) {
             console.error(`Error fetching messages for room ${room.id}:`, error);
           }
         });
-
+  
         await Promise.all(fetchMessagesPromises);
       } catch (error) {
         console.error("Error fetching rooms or messages:", error);
       }
     };
-
+  
     fetchAllRoomsAndMessages();
   }, [dispatch]);
   
