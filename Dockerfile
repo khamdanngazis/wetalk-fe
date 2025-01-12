@@ -1,11 +1,11 @@
-# Use the official Apache HTTPD image
-FROM httpd:2.4
+# Step 1: Use Nginx to serve the app
+FROM nginx:alpine
 
-# Copy the dist folder (React app output) into the Apache web directory
-COPY dist/ /usr/local/apache2/htdocs/
+# Copy the pre-built Vite production output into the Nginx directory
+COPY ./dist /usr/share/nginx/html
 
-# Copy the custom .htaccess to handle SPA routing
-COPY .htaccess /usr/local/apache2/htdocs/
-
-# Expose port 80 for the Apache server
+# Expose port 80 for Nginx
 EXPOSE 80
+
+# Start Nginx server
+CMD ["nginx", "-g", "daemon off;"]
