@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:80" # Maps port 80 in the container to port 8080 on the host
+      - "8080:80"  # Expose port 8080 on the host to port 80 on the container
     volumes:
-      - ./build:/usr/local/apache2/htdocs
+      - ./dist:/usr/local/apache2/htdocs  # Map the dist directory to the Apache htdocs directory
     restart: always
